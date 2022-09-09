@@ -1,0 +1,35 @@
+{
+    "version": "0.2.0",
+    "configurations": [        
+        {
+			"name": "chrome",
+			"type": "chrome",
+			"request": "launch",
+            "preLaunchTask": "deploy frontend",
+            "postDebugTask": "Terminate All Tasks",
+            "runtimeArgs": ["--remote-debugging-port=9222"],
+			"sourceMapPathOverrides": {
+        		// add this map
+                "webpack:///./~/*": "${webRoot}/node_modules/*",  // a default
+                "webpack:///./*":   "${webRoot}/src/*",        // unsure how/why webpack generates ./links.js
+                "webpack:///../*": "${webRoot}/src/*",         // unsure how/why webpack generates ../links.js
+                "webpack:///*":     "*"                           // a default, catch everything else
+			},
+			"sourceMaps": true,
+            "trace": true,            
+            "disableNetworkCache": true,
+			"url": "http://localhost:9000/",
+            "webRoot": "${workspaceFolder}"                   // folder containing webpack.config.js
+		},
+        {
+            "name": "attach",
+            "type": "pwa-chrome",
+            "port": 9222,
+            "request": "attach",
+            "sourceMaps": true,
+            "webRoot": "${workspaceFolder}",                 // folder containing webpack.config.js
+            "url": "http://localhost:9000/"
+        }
+    ]
+
+}

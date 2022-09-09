@@ -1,11 +1,16 @@
-import { WebGLRenderer, Scene, PerspectiveCamera, BoxGeometry, MeshBasicMaterial, Mesh } from 'three';
+import { WebGLRenderer, Scene, PerspectiveCamera, AmbientLight, DirectionalLight, MeshStandardMaterial, Mesh, BoxGeometry } from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
+import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+import { CSG } from 'three-csg-ts';
 
-var container,
+let container,
 	camera,
 	scene,
 	renderer,
 	controls;
+
+let sink = null;
+let cube = null;
 
 main();
 
@@ -30,17 +35,46 @@ function main() {
 	controls = new OrbitControls(camera, renderer.domElement);
 	//controls.update() must be called after any manual changes to the camera's transform
 	controls.update();
+	const light = new AmbientLight(0x404040); // soft white light
+	scene.add(light);
+	const directionalLight = new DirectionalLight(0xffffff, 0.5);
+	scene.add(directionalLight);
+	loadObject();
 	createCube();
 	
 
 };
 
-function createCube(width, height, depth, color) {
-	var geometry = new BoxGeometry(width, height, depth);
-	var material = new MeshBasicMaterial({ color: color });
-	var cube = new Mesh(geometry, material);
+function loadObject() {
+	const loader = new GLTFLoader().setPath('models/');
+	loader.load('sink.glb', (glb) => {
+		sink = glb.scene;
+		scene.add(sink);
+		booleanOps();
+	});
+}
+
+function createCube() {
+	const geometry = new BoxGeometry(0.5, 0.5, 0.5);
+	const material = new MeshStandardMaterial({ color: 0x00ff00 });
+	cube = new Mesh(geometry, material);
+	cube.position.set(0,-0.15,0)
 	scene.add(cube);
-	return cube;
+}
+
+function booleanOps(){
+
+	let booleanMesh = cube.clone();
+	sink.traverse(child => {
+		if (child.isMesh) {
+			child.updateMatrix();
+			booleanMesh = CSG.subtract(booleanMesh, child);
+		}
+	});
+
+	scene.remove(cube);
+	scene.remove(sink);
+	scene.add(booleanMesh);
 }
 
 function render() {

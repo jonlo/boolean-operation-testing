@@ -23,10 +23,12 @@
 		"replace-in-file": "6.3.2",
 		"terser-webpack-plugin": "5.3.1",
 		"case-sensitive-paths-webpack-plugin": "^2.4.0",
+		"copy-webpack-plugin": "10.2.4",
 		"webpack": "5.69.1",
 		"webpack-bundle-analyzer": "4.5.0",
 		"webpack-cli": "4.10.0",
-		"webpack-dev-server": "4.7.4"
+		"webpack-dev-server": "4.7.4",
+		"three-csg-ts": "3.1.10"
 	},
 	"dependencies": {
 		"three": "0.144.0"

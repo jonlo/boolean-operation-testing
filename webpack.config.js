@@ -10,7 +10,8 @@
  const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
  const CaseSensitivePathsPlugin = require('case-sensitive-paths-webpack-plugin');
  const CssMinimizerPlugin = require('css-minimizer-webpack-plugin');
- 
+ const CopyWebpackPlugin = require('copy-webpack-plugin');
+
  const devMode = process.env.NODE_ENV === 'development';
  console.log('devMode', process.env.NODE_ENV);
  module.exports = (env) => {
@@ -106,7 +107,12 @@
 			 new webpack.DefinePlugin({
 				 'process.env.MEDIATOR_JS_COV': JSON.stringify('development')
 			 }),
-			 new CaseSensitivePathsPlugin()
+			 new CaseSensitivePathsPlugin(),
+			 new CopyWebpackPlugin({
+				 patterns: [
+					 { from: 'models', to: 'models' },
+				 ]
+			 }),
 		 ],
 		 stats: {
 			 colors: true
